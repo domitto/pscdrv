@@ -16,6 +16,9 @@ startup), `demo.bob` (Phoebus screen).
 
 ## Requirements
 
+- This branch includes a small driver change (`coreApp/src/devcommon.cpp`) that adds
+  `info("TagFromBlock", ...)`, which sets a record's UTAG from the received block.
+  The demo needs it.
 - EPICS Base 7.0.x with QSRV1 (pva2pva) built in. Tested with 7.0.10.
 - libevent >= 2.0.19 (needed by pscdrv).
 - Python 3 with `numpy`. Optional: `uvloop` (`pip install uvloop`); without it the
