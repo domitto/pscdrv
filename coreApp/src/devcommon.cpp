@@ -61,6 +61,16 @@ void parse_link(Priv* priv, const char* link, int direction)
 
         const char *scan = info.get("SYNC");
         onconn = scan && epicsStrCaseCmp(scan, "ProcOnConn")==0;
+
+        const char *tagoffset = info.get("TagFromBlock");
+        if(tagoffset) {
+            std::istringstream tsstrm(tagoffset);
+            tsstrm >> priv->tagoffset;
+            if(tsstrm.fail())
+                timefprintf(stderr, "%s: Error processing time offset '%s'\n", priv->prec->name, tagoffset);
+            else
+                priv->tagFromBlock = true;
+        }
     }
 
     Guard(priv->psc->lock);
@@ -126,6 +136,14 @@ void setRecTimestamp(Priv *priv)
     }
 
     priv->prec->time = result;
+
+#ifdef DBR_UTAG
+    if(priv->tagFromBlock && priv->block) {
+        epicsUInt32 raw;
+        if(priv->block->data.copyout(&raw, priv->tagoffset, sizeof(raw)))
+            priv->prec->utag = ntohl(raw);
+    }
+#endif
 }
 
 RecInfo::RecInfo(const char *recname)
