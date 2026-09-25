@@ -1,0 +1,1101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>UTAG Filtering Demo</name>
+  <width>700</width>
+  <height>1028</height>
+  <widget type="rectangle" version="2.0.0">
+    <name>HeaderBar</name>
+    <width>700</width>
+    <height>54</height>
+    <line_width>0</line_width>
+    <background_color>
+      <color red="18" green="21" blue="27">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Title</name>
+    <text>TST: UTAG FILTERING DEMO</text>
+    <x>16</x>
+    <y>8</y>
+    <width>460</width>
+    <height>28</height>
+    <font>
+      <font name="Header 1" family="Liberation Sans" style="BOLD" size="22.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="231" green="235" blue="240">
+      </color>
+    </foreground_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Subtitle</name>
+    <text>pscdrv driver (createPSC) + simulated device (sim.py) - UTAG read straight off the wire</text>
+    <x>16</x>
+    <y>34</y>
+    <width>640</width>
+    <height>16</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="11.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </foreground_color>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>SOURCE</name>
+    <x>16</x>
+    <y>68</y>
+    <width>328</width>
+    <height>236</height>
+    <font>
+      <font name="Group" family="Liberation Sans" style="BOLD" size="12.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </foreground_color>
+    <line_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="23" green="27" blue="34">
+      </color>
+    </background_color>
+    <widget type="label" version="2.0.0">
+      <name>ValueCaption</name>
+      <text>VALUE (device-reported)</text>
+      <x>12</x>
+      <y>8</y>
+      <width>250</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>ValueBig</name>
+      <pv_name>pva://TST:Val-I</pv_name>
+      <x>12</x>
+      <y>28</y>
+      <width>276</width>
+      <height>70</height>
+      <font>
+        <font name="Header 1" family="Liberation Sans" style="BOLD" size="22.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="23" green="27" blue="34">
+        </color>
+      </background_color>
+      <precision>0</precision>
+      <show_units>false</show_units>
+      <horizontal_alignment>1</horizontal_alignment>
+      <vertical_alignment>1</vertical_alignment>
+      <rules>
+        <rule name="ColorBySource" prop_id="foreground_color" out_exp="false">
+          <exp bool_exp="pv0==111">
+            <value>
+              <color name="SourceA" red="255" green="180" blue="84">
+              </color>
+            </value>
+          </exp>
+          <exp bool_exp="pv0==222">
+            <value>
+              <color name="SourceB" red="79" green="209" blue="197">
+              </color>
+            </value>
+          </exp>
+          <pv_name>pva://TST:Val-I</pv_name>
+        </rule>
+      </rules>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>UtagCaption</name>
+      <text>UTAG (raw bitfield, device-set)</text>
+      <x>12</x>
+      <y>108</y>
+      <width>250</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="byte_monitor" version="2.0.0">
+      <name>UtagBits</name>
+      <pv_name>pva://TST:Utag-I</pv_name>
+      <x>12</x>
+      <y>130</y>
+      <width>280</width>
+      <height>32</height>
+      <numBits>6</numBits>
+      <bitReverse>false</bitReverse>
+      <square>true</square>
+      <off_color>
+        <color red="48" green="52" blue="61">
+        </color>
+      </off_color>
+      <on_color>
+        <color red="100" green="220" blue="120">
+        </color>
+      </on_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>BitsCaption</name>
+      <text>bit4 LBEG (0x10)   bit5 MPEG (0x20)   both clear = beam off</text>
+      <x>12</x>
+      <y>168</y>
+      <width>304</width>
+      <height>14</height>
+      <font>
+        <font family="Liberation Sans" style="ITALIC" size="9.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="107" green="114" blue="128">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>PeriodRBCaption</name>
+      <text>toggle period</text>
+      <x>12</x>
+      <y>190</y>
+      <width>90</width>
+      <height>18</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>PeriodRB</name>
+      <pv_name>pva://TST:Period-RB</pv_name>
+      <x>108</x>
+      <y>188</y>
+      <width>70</width>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="23" green="27" blue="34">
+        </color>
+      </background_color>
+      <show_units>false</show_units>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>MsLabel</name>
+      <text>ms</text>
+      <x>182</x>
+      <y>190</y>
+      <width>30</width>
+      <height>18</height>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>DEVICE CONTROLS</name>
+    <x>356</x>
+    <y>68</y>
+    <width>328</width>
+    <height>236</height>
+    <font>
+      <font name="Group" family="Liberation Sans" style="BOLD" size="12.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </foreground_color>
+    <line_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="23" green="27" blue="34">
+      </color>
+    </background_color>
+    <widget type="led" version="2.0.0">
+      <name>BeamLED</name>
+      <pv_name>pva://TST:BEAM</pv_name>
+      <x>12</x>
+      <y>10</y>
+      <off_color>
+        <color red="48" green="52" blue="61">
+        </color>
+      </off_color>
+      <on_color>
+        <color red="100" green="220" blue="120">
+        </color>
+      </on_color>
+      <square>true</square>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>BeamLabel</name>
+      <text>Beam</text>
+      <x>44</x>
+      <y>10</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="bool_button" version="2.0.0">
+      <name>BeamButton</name>
+      <pv_name>pva://TST:BEAM</pv_name>
+      <x>140</x>
+      <y>8</y>
+      <width>90</width>
+      <height>24</height>
+    </widget>
+    <widget type="led" version="2.0.0">
+      <name>SrcLED</name>
+      <pv_name>pva://TST:SRC</pv_name>
+      <x>12</x>
+      <y>48</y>
+      <off_color>
+        <color name="SourceA" red="255" green="180" blue="84">
+        </color>
+      </off_color>
+      <on_color>
+        <color name="SourceB" red="79" green="209" blue="197">
+        </color>
+      </on_color>
+      <square>true</square>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>SrcLabel</name>
+      <text>Src (manual)</text>
+      <x>44</x>
+      <y>48</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="bool_button" version="2.0.0">
+      <name>SrcButton</name>
+      <pv_name>pva://TST:SRC</pv_name>
+      <x>140</x>
+      <y>46</y>
+      <width>90</width>
+      <height>24</height>
+      <off_label>LBEG</off_label>
+      <on_label>MPEG</on_label>
+    </widget>
+    <widget type="led" version="2.0.0">
+      <name>AutoLED</name>
+      <pv_name>pva://TST:AUTO</pv_name>
+      <x>12</x>
+      <y>86</y>
+      <off_color>
+        <color red="48" green="52" blue="61">
+        </color>
+      </off_color>
+      <on_color>
+        <color red="100" green="220" blue="120">
+        </color>
+      </on_color>
+      <square>true</square>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>AutoLabel</name>
+      <text>Auto-toggle</text>
+      <x>44</x>
+      <y>86</y>
+      <width>90</width>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="bool_button" version="2.0.0">
+      <name>AutoButton</name>
+      <pv_name>pva://TST:AUTO</pv_name>
+      <x>140</x>
+      <y>84</y>
+      <width>90</width>
+      <height>24</height>
+      <off_label>Manual</off_label>
+      <on_label>Auto</on_label>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>PeriodSPLabel</name>
+      <text>Period (ms)</text>
+      <x>12</x>
+      <y>128</y>
+      <width>90</width>
+      <height>22</height>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>PeriodSP</name>
+      <pv_name>pva://TST:Period-SP</pv_name>
+      <x>140</x>
+      <y>126</y>
+      <width>90</width>
+      <height>26</height>
+      <show_units>false</show_units>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>PresetsCaption</name>
+      <text>presets</text>
+      <x>11</x>
+      <y>163</y>
+      <width>90</width>
+      <height>14</height>
+      <font>
+        <font family="Liberation Sans" style="ITALIC" size="9.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="107" green="114" blue="128">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>PresetFast</name>
+      <actions>
+        <action type="write_pv">
+          <description>Flip every tick</description>
+          <pv_name>pva://TST:Period-SP</pv_name>
+          <value>100</value>
+        </action>
+      </actions>
+      <text>100ms</text>
+      <x>11</x>
+      <y>181</y>
+      <width>92</width>
+      <height>26</height>
+      <tooltip>$(actions)</tooltip>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>PresetMed</name>
+      <actions>
+        <action type="write_pv">
+          <description>Flip every second</description>
+          <pv_name>pva://TST:Period-SP</pv_name>
+          <value>1000</value>
+        </action>
+      </actions>
+      <text>1 s</text>
+      <x>109</x>
+      <y>181</y>
+      <width>92</width>
+      <height>26</height>
+      <tooltip>$(actions)</tooltip>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>PresetSlow</name>
+      <actions>
+        <action type="write_pv">
+          <description>Flip every 3 seconds</description>
+          <pv_name>pva://TST:Period-SP</pv_name>
+          <value>3000</value>
+        </action>
+      </actions>
+      <text>3 s</text>
+      <x>207</x>
+      <y>181</y>
+      <width>92</width>
+      <height>26</height>
+      <tooltip>$(actions)</tooltip>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>CLIENT-SIDE FILTER (pvAccess channel filter)</name>
+    <x>16</x>
+    <y>358</y>
+    <width>668</width>
+    <height>130</height>
+    <font>
+      <font name="Group" family="Liberation Sans" style="BOLD" size="12.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </foreground_color>
+    <line_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="23" green="27" blue="34">
+      </color>
+    </background_color>
+    <widget type="label" version="2.0.0">
+      <name>AllCaption</name>
+      <text>ALL (unfiltered)</text>
+      <x>12</x>
+      <y>8</y>
+      <width>200</width>
+      <height>18</height>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>AllValue</name>
+      <pv_name>pva://TST:Val-I</pv_name>
+      <x>12</x>
+      <y>28</y>
+      <width>200</width>
+      <height>56</height>
+      <font>
+        <font name="Header 2" family="Liberation Sans" style="BOLD" size="18.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="23" green="27" blue="34">
+        </color>
+      </background_color>
+      <precision>0</precision>
+      <show_units>false</show_units>
+      <horizontal_alignment>1</horizontal_alignment>
+      <vertical_alignment>1</vertical_alignment>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>AllTime</name>
+      <text>upd --:--:--.---</text>
+      <x>12</x>
+      <y>88</y>
+      <width>200</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <scripts>
+        <script file="EmbeddedPy">
+          <text><![CDATA[from org.csstudio.display.builder.runtime.script import PVUtil
+import time
+ms = PVUtil.getTimeInMilliseconds(pvs[0])
+t = time.localtime(ms/1000.0)
+widget.setPropertyValue("text", "upd %02d:%02d:%02d.%03d" % (t.tm_hour, t.tm_min, t.tm_sec, ms % 1000))
+]]></text>
+          <pv_name>pva://TST:Val-I</pv_name>
+        </script>
+      </scripts>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FilterACaption</name>
+      <text>FILTER-A / LBEG   {utag:{M:48,V:16}}</text>
+      <x>232</x>
+      <y>8</y>
+      <width>220</width>
+      <height>18</height>
+      <foreground_color>
+        <color name="SourceA" red="255" green="180" blue="84">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FilterAValue</name>
+      <pv_name>pva://TST:Val-I.{utag:{M:48,V:16}}</pv_name>
+      <x>232</x>
+      <y>28</y>
+      <width>200</width>
+      <height>56</height>
+      <font>
+        <font name="Header 2" family="Liberation Sans" style="BOLD" size="18.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color name="SourceA" red="255" green="180" blue="84">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="23" green="27" blue="34">
+        </color>
+      </background_color>
+      <precision>0</precision>
+      <show_units>false</show_units>
+      <horizontal_alignment>1</horizontal_alignment>
+      <vertical_alignment>1</vertical_alignment>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FilterATime</name>
+      <text>upd --:--:--.---</text>
+      <x>232</x>
+      <y>88</y>
+      <width>200</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color name="SourceA" red="255" green="180" blue="84">
+        </color>
+      </foreground_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <scripts>
+        <script file="EmbeddedPy">
+          <text><![CDATA[from org.csstudio.display.builder.runtime.script import PVUtil
+import time
+ms = PVUtil.getTimeInMilliseconds(pvs[0])
+t = time.localtime(ms/1000.0)
+widget.setPropertyValue("text", "upd %02d:%02d:%02d.%03d" % (t.tm_hour, t.tm_min, t.tm_sec, ms % 1000))
+]]></text>
+          <pv_name>pva://TST:Val-I.{utag:{M:48,V:16}}</pv_name>
+        </script>
+      </scripts>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FilterBCaption</name>
+      <text>FILTER-B / MPEG   {utag:{M:48,V:32}}</text>
+      <x>452</x>
+      <y>8</y>
+      <width>220</width>
+      <height>18</height>
+      <foreground_color>
+        <color name="SourceB" red="79" green="209" blue="197">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>FilterBValue</name>
+      <pv_name>pva://TST:Val-I.{utag:{M:48,V:32}}</pv_name>
+      <x>452</x>
+      <y>28</y>
+      <width>188</width>
+      <height>56</height>
+      <font>
+        <font name="Header 2" family="Liberation Sans" style="BOLD" size="18.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color name="SourceB" red="79" green="209" blue="197">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="23" green="27" blue="34">
+        </color>
+      </background_color>
+      <precision>0</precision>
+      <show_units>false</show_units>
+      <horizontal_alignment>1</horizontal_alignment>
+      <vertical_alignment>1</vertical_alignment>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>FilterBTime</name>
+      <text>upd --:--:--.---</text>
+      <x>452</x>
+      <y>88</y>
+      <width>188</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color name="SourceB" red="79" green="209" blue="197">
+        </color>
+      </foreground_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <scripts>
+        <script file="EmbeddedPy">
+          <text><![CDATA[from org.csstudio.display.builder.runtime.script import PVUtil
+import time
+ms = PVUtil.getTimeInMilliseconds(pvs[0])
+t = time.localtime(ms/1000.0)
+widget.setPropertyValue("text", "upd %02d:%02d:%02d.%03d" % (t.tm_hour, t.tm_min, t.tm_sec, ms % 1000))
+]]></text>
+          <pv_name>pva://TST:Val-I.{utag:{M:48,V:32}}</pv_name>
+        </script>
+      </scripts>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>RAW WAVEFORM (block 0, source-dependent shape)</name>
+    <x>16</x>
+    <y>498</y>
+    <width>668</width>
+    <height>180</height>
+    <font>
+      <font name="Group" family="Liberation Sans" style="BOLD" size="12.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </foreground_color>
+    <line_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="23" green="27" blue="34">
+      </color>
+    </background_color>
+    <widget type="xyplot" version="3.0.0">
+      <name>WaveformPlot</name>
+      <x>12</x>
+      <y>8</y>
+      <width>612</width>
+      <height>156</height>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="15" green="18" blue="24">
+        </color>
+      </background_color>
+      <x_axis>
+        <title>sample</title>
+        <autoscale>false</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>1023.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>counts</title>
+          <autoscale>false</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>-250.0</minimum>
+          <maximum>500.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <on_right>false</on_right>
+          <visible>true</visible>
+          <color>
+            <color name="Text" red="0" green="0" blue="0">
+            </color>
+          </color>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>WF</name>
+          <x_pv></x_pv>
+          <y_pv>pva://TST:WF</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="79" green="209" blue="197">
+            </color>
+          </color>
+          <line_width>2</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>4</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>WAVEFORM BY SOURCE (utag-filtered)</name>
+    <x>16</x>
+    <y>688</y>
+    <width>668</width>
+    <font>
+      <font name="Group" family="Liberation Sans" style="BOLD" size="12.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </foreground_color>
+    <line_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="23" green="27" blue="34">
+      </color>
+    </background_color>
+    <widget type="label" version="2.0.0">
+      <name>WfFilterACaption</name>
+      <text>beam on, LBEG   {utag:{M:48,V:16}}</text>
+      <x>12</x>
+      <y>8</y>
+      <width>320</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color name="SourceA" red="255" green="180" blue="84">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>WfFilterBCaption</name>
+      <text>beam on, MPEG   {utag:{M:48,V:32}}</text>
+      <x>360</x>
+      <y>8</y>
+      <width>296</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color name="SourceB" red="79" green="209" blue="197">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="xyplot" version="3.0.0">
+      <name>WaveformFilteredB</name>
+      <x>332</x>
+      <y>24</y>
+      <width>308</width>
+      <height>150</height>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="15" green="18" blue="24">
+        </color>
+      </background_color>
+      <x_axis>
+        <title></title>
+        <autoscale>false</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>1023.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title></title>
+          <autoscale>false</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>-250.0</minimum>
+          <maximum>500.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <on_right>false</on_right>
+          <visible>true</visible>
+          <color>
+            <color name="Text" red="0" green="0" blue="0">
+            </color>
+          </color>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>WF B</name>
+          <x_pv></x_pv>
+          <y_pv>pva://TST:WF.{utag:{M:48,V:32}}</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color name="SourceB" red="79" green="209" blue="197">
+            </color>
+          </color>
+          <line_width>2</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>4</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="3.0.0">
+      <name>WaveformFilteredA</name>
+      <x>-2</x>
+      <y>24</y>
+      <width>290</width>
+      <height>150</height>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="15" green="18" blue="24">
+        </color>
+      </background_color>
+      <x_axis>
+        <title></title>
+        <autoscale>false</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>1023.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title></title>
+          <autoscale>false</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>-250.0</minimum>
+          <maximum>500.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <on_right>false</on_right>
+          <visible>true</visible>
+          <color>
+            <color name="Text" red="0" green="0" blue="0">
+            </color>
+          </color>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>WF A</name>
+          <x_pv></x_pv>
+          <y_pv>pva://TST:WF.{utag:{M:48,V:16}}</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color name="SourceA" red="255" green="180" blue="84">
+            </color>
+          </color>
+          <line_width>2</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>4</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+  </widget>
+  <widget type="group" version="3.0.0">
+    <name>PIPELINE HEALTH (live, from Seq-I)</name>
+    <x>16</x>
+    <y>898</y>
+    <width>668</width>
+    <height>90</height>
+    <font>
+      <font name="Group" family="Liberation Sans" style="BOLD" size="12.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </foreground_color>
+    <line_color>
+      <color red="139" green="147" blue="163">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="23" green="27" blue="34">
+      </color>
+    </background_color>
+    <widget type="label" version="2.0.0">
+      <name>RateCaption</name>
+      <text>achieved rate</text>
+      <x>12</x>
+      <y>8</y>
+      <width>150</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>RateValue</name>
+      <pv_name>pva://TST:Rate-I</pv_name>
+      <x>12</x>
+      <y>26</y>
+      <width>160</width>
+      <height>36</height>
+      <font>
+        <font name="Header 2" family="Liberation Sans" style="BOLD" size="18.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="231" green="235" blue="240">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="23" green="27" blue="34">
+        </color>
+      </background_color>
+      <precision>0</precision>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>DropCaption</name>
+      <text>dropped ticks (cumulative)</text>
+      <x>220</x>
+      <y>8</y>
+      <width>220</width>
+      <height>16</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="10.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="139" green="147" blue="163">
+        </color>
+      </foreground_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>DropValue</name>
+      <pv_name>pva://TST:DropTotal-I</pv_name>
+      <x>220</x>
+      <y>26</y>
+      <width>160</width>
+      <height>36</height>
+      <font>
+        <font name="Header 2" family="Liberation Sans" style="BOLD" size="18.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="100" green="220" blue="120">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="23" green="27" blue="34">
+        </color>
+      </background_color>
+      <precision>0</precision>
+      <show_units>false</show_units>
+      <rules>
+        <rule name="RedIfNonzero" prop_id="foreground_color" out_exp="false">
+          <exp bool_exp="pv0==0">
+            <value>
+              <color red="100" green="220" blue="120">
+              </color>
+            </value>
+          </exp>
+          <exp bool_exp="pv0&gt;0">
+            <value>
+              <color red="230" green="70" blue="70">
+              </color>
+            </value>
+          </exp>
+          <pv_name>pva://TST:DropTotal-I</pv_name>
+        </rule>
+      </rules>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>HealthNote</name>
+      <text>live indicator only - the recorded soak_test.py log is the actual evidence</text>
+      <x>420</x>
+      <y>28</y>
+      <width>240</width>
+      <height>48</height>
+      <font>
+        <font family="Liberation Sans" style="ITALIC" size="9.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="107" green="114" blue="128">
+        </color>
+      </foreground_color>
+    </widget>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Footer</name>
+    <text>iocBoot/iocutag - sim.py, sim.db, st.cmd, demo.bob</text>
+    <x>16</x>
+    <y>1004</y>
+    <width>640</width>
+    <height>16</height>
+    <font>
+      <font family="Liberation Sans" style="ITALIC" size="9.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="107" green="114" blue="128">
+      </color>
+    </foreground_color>
+  </widget>
+</display>

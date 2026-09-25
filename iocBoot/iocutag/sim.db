@@ -1,0 +1,184 @@
+# UTAG filtering demo
+#
+# Block 0, per tick:
+#   [0:20)    trailer: sec(4) nsec(4) tag(4) value(4) seq(4), big-endian
+#   [20:...)  the demo waveform, 1024 x int32
+#
+# "tag" is 0x10 = LBEG (H- -> PSR), 0x20 = MPEG (H- -> WNR), 0 if beam is off.
+# "value" mirrors it as 111/222/0 for readability. "seq" is a plain per-tick
+# counter for spotting dropped updates.
+#
+# Val-I and WF read straight from that block via the driver's
+# TimeFromBlock/TagFromBlock support, so their .TIME and .UTAG carry the
+# device's own timestamp and tag.
+#
+# A PVA client can filter monitor updates by UTAG with the "utag" channel filter:
+#   pvmonitor 'TST:Val-I.{utag:{M:48,V:16}}'   # LBEG only
+#   pvmonitor 'TST:Val-I.{utag:{M:48,V:32}}'   # MPEG only
+
+record(longin, "$(P)Val-I") {
+    field(DESC, "Device value: 111=LBEG,222=MPEG")
+    field(DTYP, "PSC Reg")
+    field(INP , "@$(NAME) 0 12") # trailer offset 12 - the "value" word
+    field(SCAN, "I/O Intr")
+    field(TSE , "-2")
+    field(FLNK, "$(P)CNT")
+    info("TimeFromBlock", "0") # time from trailer[0:7]
+    info("TagFromBlock", "8")  # utag from trailer[8:11]
+}
+
+record(longin, "$(P)Utag-I") {
+    field(DESC, "Device tag word as a live scalar")
+    field(DTYP, "PSC Reg")
+    field(INP , "@$(NAME) 0 8") # trailer offset 8 - the "tag" word
+    field(SCAN, "I/O Intr")
+    field(TSE , "-2")
+    info("TimeFromBlock", "0")
+    info("TagFromBlock", "8")  # also set UTAG here too, for consistency
+}
+
+record(longin, "$(P)Seq-I") {
+    field(DESC, "Device per-tick counter (drop detect)")
+    field(DTYP, "PSC Reg")
+    field(INP , "@$(NAME) 0 16") # trailer offset 16 - the "seq" word
+    field(SCAN, "I/O Intr")
+    field(TSE , "-2")
+    field(FLNK, "$(P)Drop-I")
+    info("TimeFromBlock", "0")
+    info("TagFromBlock", "8")
+}
+
+# Live drop/rate tracking, pure database logic (no driver code), 
+# useful to glance at while the demo is running; 
+# Rate-I is only as accurate as its own periodic SCAN).
+
+record(calc, "$(P)Drop-I") {
+    field(DESC, "Dropped ticks since last (0=none)")
+    field(INPA, "$(P)Seq-I NPP")
+    field(INPB, "$(P)SeqPrev-I NPP")
+    field(CALC, "B==0?0:((A-B)>1?(A-B-1):0)") # B==0 => not primed yet (boot/first tick)
+    field(TSEL, "$(P)Seq-I.TIME")
+    field(FLNK, "$(P)DropTotal-I")
+}
+
+record(calc, "$(P)DropTotal-I") {
+    field(DESC, "Cumulative dropped ticks")
+    field(INPA, "$(P)Drop-I NPP")
+    field(INPB, "$(P)DropTotal-I.VAL NPP") # self-reference: own VAL is the running total
+    field(CALC, "A+B")
+    field(FLNK, "$(P)Count-I")
+}
+
+record(calc, "$(P)Count-I") {
+    field(DESC, "Cumulative ticks received")
+    field(INPA, "$(P)Count-I.VAL NPP") # self-reference: own VAL is the running total
+    field(CALC, "A+1")
+    field(FLNK, "$(P)SeqPrev-I")
+}
+
+record(calc, "$(P)SeqPrev-I") {
+    field(DESC, "Seq-I value as of the prior tick")
+    field(INPA, "$(P)Seq-I NPP")
+    field(CALC, "A")
+}
+
+record(calc, "$(P)Rate-I") {
+    field(DESC, "Live achieved tick rate")
+    field(SCAN, ".5 second")
+    field(INPA, "$(P)Count-I NPP")
+    field(INPB, "$(P)RatePrev-I NPP")
+    field(CALC, "(A-B)*2") # 2 = 1 / SCAN period in seconds
+    field(EGU , "Hz")
+    field(PREC, "1")
+    field(FLNK, "$(P)RatePrev-I")
+}
+
+record(calc, "$(P)RatePrev-I") {
+    field(DESC, "Count-I as of the prior Rate-I scan")
+    field(INPA, "$(P)Count-I NPP")
+    field(CALC, "A")
+}
+
+record(waveform, "$(P)WF") {
+    field(DTYP, "PSC Block I32 In")
+    field(INP , "@$(NAME) 0 20") # skip the 20-byte trailer
+    field(SCAN, "I/O Intr")
+    field(FTVL, "DOUBLE")
+    field(NELM, "1024")
+    field(TSE , "-2")
+    info("TimeFromBlock", "0")
+    info("TagFromBlock", "8")
+}
+
+# sim control
+
+record(calc, "$(P)CNT") {
+    field(CALC, "VAL+1")
+    field(TSEL, "$(P)Val-I.TIME") # also copies UTAG
+}
+
+record(bo, "$(P)BEAM") {
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(OUT , "$(P)CTRL.B0 PP")
+    field(VAL , "0")
+}
+
+record(bo, "$(P)SRC") {
+    field(ZNAM, "LBEG")
+    field(ONAM, "MPEG")
+    field(OUT , "$(P)CTRL.B1 PP")
+    field(VAL , "0")
+}
+
+record(bo, "$(P)AUTO") {
+    field(ZNAM, "Manual")
+    field(ONAM, "Auto")
+    field(OUT , "$(P)CTRL.B2 PP")
+    field(VAL , "0")
+}
+
+record(longout, "$(P)Period-SP") {
+    field(DESC, "Auto-toggle period (ms, rounds to 100ms)")
+    field(DTYP, "PSC Reg")
+    field(OUT , "@$(NAME) 2") # block 2, offset 0 - separate from CTRL's block 1
+    field(VAL , "100")        # 100ms default
+    field(EGU , "ms")
+    field(FLNK, "$(P)send2_")
+}
+
+record(longout, "$(P)send2_") {
+    field(DTYP, "PSC Ctrl Send")
+    field(OUT , "@$(NAME)")
+    field(VAL , "2")
+    field(FLNK, "$(P)send_")
+}
+
+record(longin, "$(P)Period-RB") {
+    field(DESC, "Readback of the last Period-SP sent")
+    field(DTYP, "PSC RB Reg")
+    field(INP , "@$(NAME) 2")
+    field(EGU , "ms")
+    field(SCAN, ".5 second") # RB echo has no I/O Intr support; poll it
+}
+
+record(mbboDirect, "$(P)CTRL") {
+    field(DTYP, "PSC Reg")
+    field(OUT , "@$(NAME) 1")
+    field(VAL , "0")
+    field(FLNK, "$(P)send1_")
+}
+
+record(longout, "$(P)send1_") {
+    field(DTYP, "PSC Ctrl Send")
+    field(OUT , "@$(NAME)")
+    field(VAL , "1")
+    field(FLNK, "$(P)send_")
+}
+
+record(bo, "$(P)send_") {
+    field(DTYP, "PSC Ctrl Send All")
+    field(OUT , "@$(NAME)")
+    field(ZNAM, "Send")
+    field(ONAM, "Send")
+}
